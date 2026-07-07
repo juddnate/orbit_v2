@@ -96,6 +96,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: opacity 0.2s ease;
 }
 
 .sidebar-nav a {
@@ -122,6 +123,77 @@ body {
 .sidebar-nav a.active {
   color: var(--accent);
   background-color: var(--accent-glow);
+}
+
+/* sidebarslide animation */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-base);
+  border-right: 0px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0 18px;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition:
+    width 0.3s ease,
+    padding 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.sidebar-hidden {
+  width: 0;
+  padding: 0;
+  border-right-color: transparent;
+}
+
+/* floating toggle button */
+.sidebar-toggle-floating {
+  position: absolute;
+  top: 15px;
+  left: 17px;
+  z-index: 200;
+  background: var(--bg-surface);
+  border: 0px solid var(--border-dim);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px;
+  width: 40px;
+  transition: left 0.3s ease;
+}
+
+.sidebar-toggle-floating span {
+  display: block;
+  height: 1.5px;
+  width: 100%;
+  background-color: var(--text-muted);
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-toggle-floating:hover span {
+  background-color: var(--accent);
+}
+
+.sidebar-toggle-shifted {
+  left: 17px;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+.app-shell {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
 }
 
 /* main content */
@@ -324,6 +396,8 @@ body {
   border-bottom: 0.5px solid var(--border-subtle);
   background-color: var(--bg-surface);
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .title-bar-left {

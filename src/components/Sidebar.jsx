@@ -1,11 +1,6 @@
-function Sidebar() {
+function Sidebar({ isOpen }) {
   return (
-    <aside className="sidebar">
-      <button className="sidebar-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+    <aside className={isOpen ? "sidebar" : "sidebar sidebar-hidden"}>
       <nav className="sidebar-nav">
         <a href="#" className="active" aria-label="Board view">
           &#9632;
