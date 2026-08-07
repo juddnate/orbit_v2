@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TitleBar from "./components/TitleBar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import StatsBar from "./components/StatsBar.jsx";
@@ -9,55 +9,72 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [targetColumn, setTargetColumn] = useState("backlog");
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Design logo variants",
-      column: "backlog",
-      tag: "ui",
-      date: "Jun 14",
-      complete: false,
-    },
-    {
-      id: 2,
-      title: "Build kanban layout",
-      column: "inprogress",
-      tag: "css",
-      date: "Jun 8",
-      complete: false,
-    },
-    {
-      id: 3,
-      title: "Set up repo",
-      column: "done",
-      tag: "copy",
-      date: "May 11",
-      complete: true,
-    },
-  ]);
+  // Runs once when the app first loads — fetches tasks from Neon via the API
+  useEffect(() => {
+    fetch("/api/tasks")
+      .then((res) => res.json())
+      .then((data) => {
+        setTasks(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load tasks:", err);
+        setLoading(false);
+      });
+  }, []);
 
   function openModal(column) {
     setTargetColumn(column);
     setModalOpen(true);
   }
 
-  function addTask(newTask) {
-    setTasks([
-      ...tasks,
-      { ...newTask, id: Date.now(), column: targetColumn, complete: false },
-    ]);
+  async function addTask(newTask) {
+    const res = await fetch("/api/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: newTask.title,
+        col: targetColumn,
+        tag: newTask.tag,
+        date: newTask.date,
+      }),
+    });
+    const saved = await res.json();
+    setTasks([...tasks, saved]);
     setModalOpen(false);
   }
 
-  function toggleComplete(id) {
-    setTasks(
-      tasks.map((t) => (t.id === id ? { ...t, complete: !t.complete } : t)),
-    );
+  async function toggleComplete(id) {
+    const task = tasks.find((t) => t.id === id);
+    const res = await fetch("/api/tasks", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, complete: !task.complete }),
+    });
+    const updated = await res.json();
+    setTasks(tasks.map((t) => (t.id === id ? updated : t)));
   }
 
-  function deleteTask(id) {
+  async function deleteTask(id) {
+    await fetch("/api/tasks", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
     setTasks(tasks.filter((t) => t.id !== id));
+  }
+
+  if (loading) {
+    return (
+      <div className="app-wrapper">
+        <p style={{ color: "var(--text-muted)", padding: "20px" }}>
+          Loading Orbit...
+        </p>
+      </div>
+    );
   }
 
   return (

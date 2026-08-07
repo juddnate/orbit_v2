@@ -1,9 +1,9 @@
 import TaskCard from "./TaskCard.jsx";
 
 function KanbanBoard({ tasks, onAddClick, onComplete, onDelete }) {
-  const backlogTasks = tasks.filter((t) => t.column === "backlog");
-  const inProgressTasks = tasks.filter((t) => t.column === "inprogress");
-  const doneTasks = tasks.filter((t) => t.column === "done");
+  const backlogTasks = tasks.filter((t) => t.col === "backlog");
+  const inProgressTasks = tasks.filter((t) => t.col === "inprogress");
+  const doneTasks = tasks.filter((t) => t.col === "done");
 
   return (
     <div className="kanban-board">

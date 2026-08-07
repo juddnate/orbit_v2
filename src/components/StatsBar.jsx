@@ -1,7 +1,7 @@
 function StatsBar({ tasks }) {
-  const backlogCount = tasks.filter((t) => t.column === "backlog").length;
-  const inProgressCount = tasks.filter((t) => t.column === "inprogress").length;
-  const doneCount = tasks.filter((t) => t.column === "done").length;
+  const backlogCount = tasks.filter((t) => t.col === "backlog").length;
+  const inProgressCount = tasks.filter((t) => t.col === "inprogress").length;
+  const doneCount = tasks.filter((t) => t.col === "done").length;
   const total = tasks.length;
   const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
 
